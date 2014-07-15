@@ -54,8 +54,10 @@ local frames = {uzbl_frame, emacs_frame, urxvt_frame
 
 local function client_focus()
     local focused_frame = frames[frames.focus]
-    local new_focus = focused_frame and focused_frame.client
-    if new_focus then client.focus = new_focus end
+    local focused_client = focused_frame and focused_frame.client
+    if focused_client then
+        client.focus = focused_client
+    end
 end
 
 function frame.focus_next_frame(rel_idx)
@@ -93,6 +95,19 @@ function frame.arrange(p)
             client:geometry(frame.geometry(p))
             client:raise()
         end
+    end
+
+    client_focus()
+end
+
+function frame.focus_next_frame()
+    local count = #frames
+    if count == 0 then
+        local pass = true
+    elseif frames.focus < count and frames.focus > 0 then
+        frames.focus = frames.focus + 1
+    else
+        frames.focus = 1
     end
 
     client_focus()
