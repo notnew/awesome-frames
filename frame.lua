@@ -102,12 +102,21 @@ end
 
 function frame.focus_next_frame()
     local count = #frames
-    if count == 0 then
-        local pass = true
-    elseif frames.focus < count and frames.focus > 0 then
+    if frames.focus < count and frames.focus > 0 then
         frames.focus = frames.focus + 1
     else
         frames.focus = 1
+    end
+
+    client_focus()
+end
+
+function frame.focus_prev_frame()
+    local count = #frames
+    if  frames.focus > 1 and frames.focus <= (count + 1) then
+        frames.focus = frames.focus - 1
+    else
+        frames.focus = count
     end
 
     client_focus()
@@ -120,6 +129,19 @@ function frame.dwim_next()
         client_focus()
     else
         awful.client.focus.byidx(1)
+        if client.focus then
+            client.focus:raise()
+        end
+    end
+end
+
+function frame.dwim_prev()
+    local layout = awful.layout.get()
+    if layout and layout.name == "frame" then
+        frame.focus_prev_frame()
+        client_focus()
+    else
+        awful.client.focus.byidx(-1)
         if client.focus then
             client.focus:raise()
         end
