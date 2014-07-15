@@ -51,12 +51,14 @@ local urxvt_frame = {
 
 local frames = {uzbl_frame, emacs_frame, urxvt_frame
                , focus = 1 }
+frameless_clients = {}
 
 local function client_focus()
     local focused_frame = frames[frames.focus]
     local focused_client = focused_frame and focused_frame.client
     if focused_client then
         client.focus = focused_client
+        focused_client:raise()
     end
 end
 
@@ -73,12 +75,30 @@ function frame.focus_next_frame(rel_idx)
     client_focus()
 end
 
+local function find_index(table, elem)
+    for i,e in ipairs(table) do
+        if e == elem then
+            return i
+        end
+    end
+    return nil
+end
+
 local function add_client(client)
+    local position = find_index(frameless_clients, client)
+
     for _,frame in ipairs(frames) do
         if frame.client == nil then
             frame.client = client
+            if position then
+                table.remove(frameless_clients, position)
+            end
             return
         end
+    end
+
+    if position == nil then
+        table.insert(frameless_clients, client)
     end
 end
 
@@ -120,6 +140,18 @@ function frame.focus_prev_frame()
     end
 
     client_focus()
+end
+
+-- pull next unseen client into current frame
+function frame.pull_next()
+    local next = table.remove(frameless_clients, 1)
+    local focused_frame = frames[frames.focus]
+
+    if next and focused_frame then
+        table.insert(frameless_clients, focused_frame.client)
+        focused_frame.client = next
+        client_focus()
+    end
 end
 
 function frame.dwim_next()
