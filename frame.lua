@@ -145,13 +145,24 @@ function frame.focus_prev_frame()
 end
 
 -- pull next unseen client into current frame
-function frame.pull_next()
+function frame.pull_prev()
     local next = table.remove(frameless_clients, 1)
     local focused_frame = frames[frames.focus]
 
     if next and focused_frame then
         table.insert(frameless_clients, focused_frame.client)
         focused_frame.client = next
+        client_focus()
+    end
+end
+
+function frame.pull_next()
+    local prev = table.remove(frameless_clients)
+    local focused_frame = frames[frames.focus]
+
+    if next and focused_frame then
+        table.insert(frameless_clients, 1, focused_frame.client)
+        focused_frame.client = prev
         client_focus()
     end
 end
