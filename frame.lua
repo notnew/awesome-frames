@@ -104,9 +104,31 @@ local function add_client(client)
     end
 end
 
+local function remove_stale(fresh_clients)
+    local stale = {}
+
+    for _,client in ipairs(frameless_clients) do
+        if find_index(fresh_clients, client) == nil then
+            table.insert(stale, client)
+        end
+    end
+
+    for _,frame in ipairs(frames) do
+        if not find_index(fresh_clients, frame.client) then
+            frame.client = nil
+        end
+    end
+
+    for _,client in ipairs(stale) do
+        local pos = find_index(frameless_clients, client)
+        table.remove(frameless_clients, pos)
+    end
+end
+
 function frame.arrange(p)
     local cls = p.clients
 
+    remove_stale(cls)
     for _,client in ipairs(cls) do
         add_client(client)
     end
