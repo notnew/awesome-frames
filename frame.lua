@@ -189,31 +189,5 @@ function frame.pull_next()
     end
 end
 
-function frame.dwim_next()
-    local layout = awful.layout.get()
-    if layout and layout.name == "frame" then
-        frame.focus_next_frame()
-        client_focus()
-    else
-        awful.client.focus.byidx(1)
-        if client.focus then
-            client.focus:raise()
-        end
-    end
-end
-
-function frame.dwim_prev()
-    local layout = awful.layout.get()
-    if layout and layout.name == "frame" then
-        frame.focus_prev_frame()
-        client_focus()
-    else
-        awful.client.focus.byidx(-1)
-        if client.focus then
-            client.focus:raise()
-        end
-    end
-end
-
 return frame
 
