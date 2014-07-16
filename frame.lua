@@ -88,7 +88,9 @@ local function add_client(client)
     local position = find_index(frameless_clients, client)
 
     for _,frame in ipairs(frames) do
-        if frame.client == nil then
+        if frame.client == client then
+            return
+        elseif frame.client == nil then
             frame.client = client
             if position then
                 table.remove(frameless_clients, position)
