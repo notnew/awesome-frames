@@ -62,19 +62,6 @@ local function client_focus()
     end
 end
 
-function frame.focus_next_frame(rel_idx)
-    local count = #frames
-    if count == 0 then
-        local pass = true
-    elseif frames.focus < count and frames.focus > 0 then
-        frames.focus = frames.focus + 1
-    else
-        frames.focus = 1
-    end
-
-    client_focus()
-end
-
 local function find_index(table, elem)
     for i,e in ipairs(table) do
         if e == elem then
